@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFNgApp.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EFNgApp.Models
 {
-    public class EmployeeDataAccessLayer
+    public class EmployeeDataAccessLayer : IEmployee
     {
-        myTestDBContext db = new myTestDBContext();
+        private myTestDBContext db;
+
+        public EmployeeDataAccessLayer(myTestDBContext _db)
+        {
+            db = _db;
+        }
 
         public IEnumerable<TblEmployee> GetAllEmployees()
         {

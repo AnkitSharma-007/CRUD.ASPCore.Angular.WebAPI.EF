@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EFNgApp.Interfaces;
 using EFNgApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +11,12 @@ namespace EFNgApp.Controllers
 
     public class EmployeeController : Controller
     {
-        EmployeeDataAccessLayer objemployee = new EmployeeDataAccessLayer();
+        private readonly IEmployee objemployee;
+
+        public EmployeeController(IEmployee _objemployee)
+        {
+            objemployee = _objemployee;
+        }
 
         [HttpGet]
         [Route("api/Employee/Index")]
