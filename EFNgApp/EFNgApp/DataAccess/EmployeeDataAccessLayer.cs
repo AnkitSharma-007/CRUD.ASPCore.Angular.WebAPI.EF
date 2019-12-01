@@ -21,7 +21,7 @@ namespace EFNgApp.DataAccess
         {
             try
             {
-                return db.TblEmployee.ToList();
+                return db.TblEmployee.ToList().OrderBy(x => x.EmployeeId);
             }
             catch
             {

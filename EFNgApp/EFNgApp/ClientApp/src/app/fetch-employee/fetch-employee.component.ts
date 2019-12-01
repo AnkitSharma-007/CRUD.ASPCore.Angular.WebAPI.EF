@@ -1,32 +1,38 @@
-import { Component } from '@angular/core';
-import { EmployeeService } from '../services/employee.service';
+import { Component, OnInit } from '@angular/core';
 import { Employee } from 'src/models/employee';
+import { Store, select } from "@ngrx/store";
+import { AppState } from '../state/app.state';
+import { Observable } from 'rxjs';
+import { FetchEmployee, DeleteEmployee } from 'src/app/state/actions/employee.actions';
+import { getEmployees } from 'src/app/state/reducers/employee.reducer';
 
 @Component({
   selector: 'app-fetch-employee',
   templateUrl: './fetch-employee.component.html',
   styleUrls: ['./fetch-employee.component.css']
 })
-export class FetchEmployeeComponent {
+export class FetchEmployeeComponent implements OnInit {
 
-  public empList: Employee[];
+  loading$: Observable<Boolean>;
+  error$: Observable<Error>
 
-  constructor(private _employeeService: EmployeeService) {
-    this.getEmployees();
+  public empList: Observable<Employee[]>;
+
+  temp: Employee[];
+
+  constructor(private store: Store<AppState>) {
   }
 
-  getEmployees() {
-    this._employeeService.getEmployees().subscribe(
-      (data: Employee[]) => this.empList = data
-    );
+  ngOnInit() {
+    this.store.dispatch(FetchEmployee());
+    this.empList = this.store.pipe(select(getEmployees));
+    this.loading$ = this.store.select(store => store.employee.loading);
   }
 
   delete(employeeID) {
     const ans = confirm('Do you want to delete employee with Id: ' + employeeID);
     if (ans) {
-      this._employeeService.deleteEmployee(employeeID).subscribe(() => {
-        this.getEmployees();
-      }, error => console.error(error));
+      this.store.dispatch(DeleteEmployee({ id: employeeID }));
     }
   }
 }

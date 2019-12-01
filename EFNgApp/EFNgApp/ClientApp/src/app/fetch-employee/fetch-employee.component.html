@@ -2,13 +2,13 @@
 
 <p>This component demonstrates fetching Employee data from the server.</p>
 
-<p *ngIf="!empList"><em>Loading...</em></p>
+<p *ngIf="loading$ | async"><em>Loading...</em></p>
 
 <p>
     <a [routerLink]="['/register-employee']">Create New</a>
 </p>
 
-<table class='table' *ngIf="empList">
+<table class='table'>
     <thead>
         <tr>
             <th>EmployeeId</th>
@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let emp of empList">
+        <tr *ngFor="let emp of empList | async">
             <td>{{ emp.employeeId }}</td>
             <td>{{ emp.name }}</td>
             <td>{{ emp.gender }}</td>

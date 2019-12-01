@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeService } from '../services/employee.service';
 import { City } from 'src/models/city';
 import { Employee } from 'src/models/employee';
+import { AppState } from '../state/app.state';
+import { Store } from '@ngrx/store';
+import { AddEmployee, EditEmployee } from '../state/actions/employee.actions';
 
 @Component({
   selector: 'app-add-employee',
@@ -19,7 +22,8 @@ export class AddEmployeeComponent implements OnInit {
   cityList: City[];
 
   constructor(private _fb: FormBuilder, private _avRoute: ActivatedRoute,
-    private _employeeService: EmployeeService, private _router: Router) {
+    private _employeeService: EmployeeService, private _router: Router,
+    private store: Store<AppState>) {
     if (this._avRoute.snapshot.params['id']) {
       this.employeeId = this._avRoute.snapshot.params['id'];
     }
@@ -54,15 +58,9 @@ export class AddEmployeeComponent implements OnInit {
     }
 
     if (this.title === 'Create') {
-      this._employeeService.saveEmployee(this.employeeForm.value)
-        .subscribe(() => {
-          this._router.navigate(['/fetch-employee']);
-        }, error => console.error(error));
+      this.store.dispatch(AddEmployee({ employee: this.employeeForm.value }));
     } else if (this.title === 'Edit') {
-      this._employeeService.updateEmployee(this.employeeForm.value)
-        .subscribe(() => {
-          this._router.navigate(['/fetch-employee']);
-        }, error => console.error(error));
+      this.store.dispatch(EditEmployee({ employee: this.employeeForm.value }));
     }
   }
 
